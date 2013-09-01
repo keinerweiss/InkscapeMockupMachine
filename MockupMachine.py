@@ -9,39 +9,47 @@ __email__      = "ruediger.marwein@gmail.com"
 __status__     = "Stable"
 
 '''
-Use a config file to export layer subsets from an inkscape file.
+Export Inkscape layer constellations as images in batch.
 
-The original svg file stays untouched.
+* Create a config file for SVG file (see below)
+* Start inkscape with your SVG file
+* Select Extensions -> MockupMachine -> Setup
+* Enter the full path to your desired output directory
+* Enter the full path to your SVG file
+* Hit execute and wait.
 
-All layers are switched off from the start.
-Use the layer labels from within inkscape to tell their visibility.
-Transitions from one file to the next can be incremental by placing a blank line.
-Active layers can be reset by placing two or more dashes.
+The configuration
 
-The config file looks like this:
+    Filename ends with a colon:
+    + Layer to activate
+    - Layer to deactivate
+      blank line to end one file (incemental)
+    -- line of minus signs to disable all layers again (full reset).
 
-<code>
-myfile-1.0:
-+ layer1
-+ layer2
+A config file may look like this:
 
-myfile-1.1:
-- layer2
-+ layer3
-+ layer4
------------------
-myfile-2.0:
-+ layer10
-+ layer11
+    myfile-1.0:
+    + layer1
+    + layer2
+    
+    myfile-1.1:
+    - layer2
+    + layer3
+    + layer4
+    -----------------
+    myfile-2.0:
+    + layer10
+    + layer11
+    
+    myfile-2.1:
+    - layer10
+    + layer12
 
-myfile-2.1:
-- layer10
-+ layer12
-</code>
+This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and myfile-2.1.png
 
-This will create the files myfile-1.0.png, myfile-1.1.png and myfile-2.0.png
-
-TODO: - Reset to normal
+TODO: Reset to normal
+TODO: Activate layers in inkscape by config file?
+TODO: Append currently active layers to config file
 '''
 
 import inkex, os, csv, math
@@ -67,7 +75,6 @@ class MockupMachine(inkex.Effect):
 
 	def __init__(self):
 		inkex.Effect.__init__(self)
-		self.OptionParser.add_option('--infile', '-i', default="Refine Earthquake - Kopie.svg", dest="infile")
 		self.OptionParser.add_option('--outdir', '-o', default="MockupMachine", dest="outdir")
 		self.OptionParser.add_option('--config', '-c', default="MockupMachine.txt", dest="config")
 		self.options, arguments = self.OptionParser.parse_args()
