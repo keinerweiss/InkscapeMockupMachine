@@ -60,7 +60,7 @@ A config file may look like this:
     - layer10
     + layer12
 
-This will create the files myfile-1.0.png, myfile-1.1.png and myfile-2.0.png
+This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and myfile-2.1.png
 
 Development notes
 =================
