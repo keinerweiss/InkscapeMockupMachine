@@ -35,11 +35,11 @@ The project includes an example Inkscape-SVG file and a config-file that outputs
 The configuration
 =================
 
-Filename ends with a colon:
-  + Layer to activate
-  - Layer to deactivate
-    blank line to end one file (incemental)
-  -- line of minus signs to disable all layers again (full reset).
+    Filename ends with a colon:
+    + Layer to activate
+    - Layer to deactivate
+      blank line to end one file (incemental)
+    -- line of minus signs to disable all layers again (full reset).
 
 A config file may look like this:
 
