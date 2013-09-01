@@ -50,7 +50,6 @@ This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and my
 TODO: Reset to normal
 TODO: Activate layers in inkscape by config file?
 TODO: Append currently active layers to config file
-TODO: trim config file input
 '''
 
 import inkex, os, csv, math
@@ -109,8 +108,9 @@ class MockupMachine(inkex.Effect):
 				pass
 			else:
 				self.filename = line[:-1].strip()
-		self.exportCurrent()		
-
+		''' export the last pending image '''
+		self.exportCurrent()
+		
 	def deactivateAll(self):
 		for e in self.SVG.findall('./{http://www.w3.org/2000/svg}g'):
 			if e.attrib['{http://www.inkscape.org/namespaces/inkscape}groupmode'] != 'layer':
@@ -168,4 +168,4 @@ class MockupMachine(inkex.Effect):
 
 if __name__ == '__main__':
 	mm = MockupMachine()
-	mm.affect()
+	mm.affect(args=sys.argv[1:], output=False)
