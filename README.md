@@ -74,3 +74,11 @@ Using print() will crash inkscape because it currupts the output SVG file.
 I suffered a lot with paths including german umlauts and whitespaces. Keep that in mind.
 
 I tested it on my computer only, which is a Windows 8 machine using Inkscape 0.48.
+
+It will leave the last layer constellation active within the active inkscape instance.
+
+TODOs
+=====
+* Do not change layer configuration in the active file after export.
+* Append the current configuration to the config file (as a setup help for the user)
+* Activate a constellation using the config file
