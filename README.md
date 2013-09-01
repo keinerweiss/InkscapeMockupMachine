@@ -62,3 +62,15 @@ A config file may look like this:
 
 This will create the files myfile-1.0.png, myfile-1.1.png and myfile-2.0.png
 
+Development notes
+=================
+
+Inkscape does not provide the file origin path to an extension, only a temp file. 
+That's why you have to set it explicitly.
+
+If you want to modify the script, don't use `print` to debug, use `inkex.debug` instead. 
+Using print() will crash inkscape because it currupts the output SVG file.
+
+I suffered a lot with paths including german umlauts and whitespaces. Keep that in mind.
+
+I tested it on my computer only, which is a Windows 8 machine using Inkscape 0.48.
