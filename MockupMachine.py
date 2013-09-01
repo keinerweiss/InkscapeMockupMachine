@@ -73,6 +73,10 @@ class MockupMachine(inkex.Effect):
 	filename = ''
 	tempfileCounter = 0
 
+	'''
+	Initialize config options, load config file and create output-dir.
+	
+	'''
 	def __init__(self):
 		inkex.Effect.__init__(self)
 		self.OptionParser.add_option('--outdir', '-o', default="MockupMachine", dest="outdir")
@@ -86,6 +90,10 @@ class MockupMachine(inkex.Effect):
 		config = open(self.options.config, 'r').read()
 
 		
+	'''
+	Go through config file line by line, collect active layers and start rendering
+	
+	'''
 	def effect(self):
 		self.SVG = self.document.getroot()
 		self.parseFile = self.options.outdir+'/temp.MockupMachine'
@@ -111,6 +119,11 @@ class MockupMachine(inkex.Effect):
 		''' export the last pending image '''
 		self.exportCurrent()
 		
+	'''
+	Deactivate all layers in the current file
+	
+	Sanitize position of display:none for easier adaption later.
+	'''
 	def deactivateAll(self):
 		for e in self.SVG.findall('./{http://www.w3.org/2000/svg}g'):
 			if e.attrib['{http://www.inkscape.org/namespaces/inkscape}groupmode'] != 'layer':
@@ -120,6 +133,10 @@ class MockupMachine(inkex.Effect):
 			style = 'display:none;'+style
 			e.attrib['style'] = style
 
+	'''
+	Activate the layer with the given label
+	
+	'''
 	def activateOne(self, label):
 		for e in self.SVG.findall('./{http://www.w3.org/2000/svg}g'):
 			if e.get('{http://www.inkscape.org/namespaces/inkscape}groupmode') != 'layer' or e.get('{http://www.inkscape.org/namespaces/inkscape}label') != label:
@@ -128,14 +145,29 @@ class MockupMachine(inkex.Effect):
 			style = style.replace('display:none', 'display:inline');
 			e.attrib['style'] = style
 
+	'''
+	Write the given content to the given file
+	
+	'''
 	def writeFile(self, filename, content):
 		f = open(filename, 'wb')
 		f.write(content)
 		f.close()
 		
+	'''
+	Do path sanitation due to issues with german umlauts and spaces in file paths
+	
+	Converts "Program Files" to the DOS 8+3 name and replaces \ by /
+	'''
 	def treatPath(self, str):	
 		return str.replace("\\","/").replace('Program Files (x86)', 'PROGRA~2').replace('Program Files', 'PROGRA~1').replace("R\xfcdiger", 'RDIGER~1')
 		
+	'''
+	Activate the collected layers from config file and write png.
+	
+	Uses an inkscape subprocess to render. Inkscape starts in background. 
+	A thread deletes aech temporary svg file when done.
+	'''
 	def exportCurrent(self):
 		self.deactivateAll()
 		for layer in self.activeLayers:
@@ -156,6 +188,7 @@ class MockupMachine(inkex.Effect):
 			pass
 		subprocess.Popen(shellCmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 		
+		''' cleanup thread. 20 seconds max render time '''
 		def clearTempFileWhenDone():
 			t = 0
 			while not os.path.isfile(outfile) and t < 20:
