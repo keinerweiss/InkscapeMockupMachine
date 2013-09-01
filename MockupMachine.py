@@ -28,28 +28,29 @@ The configuration
 
 A config file may look like this:
 
-    myfile-1.0:
-    + layer1
-    + layer2
-    
-    myfile-1.1:
-    - layer2
-    + layer3
-    + layer4
-    -----------------
-    myfile-2.0:
-    + layer10
-    + layer11
-    
-    myfile-2.1:
-    - layer10
-    + layer12
+myfile-1.0:
++ layer1
++ layer2
+
+myfile-1.1:
+- layer2
++ layer3
++ layer4
+-----------------
+myfile-2.0:
++ layer10
++ layer11
+
+myfile-2.1:
+- layer10
++ layer12
 
 This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and myfile-2.1.png
 
 TODO: Reset to normal
 TODO: Activate layers in inkscape by config file?
 TODO: Append currently active layers to config file
+TODO: trim config file input
 '''
 
 import inkex, os, csv, math
@@ -88,25 +89,26 @@ class MockupMachine(inkex.Effect):
 		
 	def effect(self):
 		self.SVG = self.document.getroot()
-		self.parseFile = self.options.outdir+'\\temp.MockupMachine'
+		self.parseFile = self.options.outdir+'/temp.MockupMachine'
 		
 		configLines = (line.rstrip('\n') for line in open(self.options.config, 'r'))
 		
 		for line in configLines:
-			if(line[:2] == '--' or line.strip() == ''):
+			line = line.strip()
+			if(line[:2] == '--' or line == ''):
 				self.exportCurrent()
 			if(line[:2] == '- '):
-				self.activeLayers.remove(line[2:])
+				self.activeLayers.remove(line[2:].strip())
 				list(set(self.activeLayers))
 			elif(line[:2] == '+ '):
-				self.activeLayers.append(line[2:])
+				self.activeLayers.append(line[2:].strip())
 				list(set(self.activeLayers))
 			elif(line[:2] == '--'):
 				self.activeLayers = []
 			elif(line.strip() == ''):
 				pass
 			else:
-				self.filename = line[:-1]
+				self.filename = line[:-1].strip()
 		self.exportCurrent()		
 
 	def deactivateAll(self):
@@ -145,7 +147,7 @@ class MockupMachine(inkex.Effect):
 		self.writeFile(useFile, tostring(self.SVG))
 		infile = os.path.abspath(useFile)
 		
-		outfile = self.options.outdir+'\\'+self.filename+'.png'
+		outfile = self.options.outdir+'/'+self.filename+'.png'
 		shellCmd = [self.treatPath(self.inkscapeExecutable),'-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
 		
 		try:
