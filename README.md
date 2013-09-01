@@ -1,4 +1,4 @@
-InkscapeMockupMachine
+Inkscape MockupMachine
 =====================
 
 Export Inkscape layer constellations as images in batch.
