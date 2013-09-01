@@ -1,0 +1,16 @@
+myfile-1.0:
++ layer1
++ layer2
+
+myfile-1.1:
+- layer2
++ layer3
++ layer4
+-----------------
+myfile-2.0:
++ layer10
++ layer11
+
+myfile-2.1:
+- layer10
++ layer12

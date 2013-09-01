@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inkscape-extension xmlns="http://www.inkscape.org/namespace/inkscape/extension">
+	<_name>Chose file</_name>
+	<id>org.marwein.inkscape.mockupmachine.open</id>
+
+	<dependency type="executable" location="extensions">MockupMachine.py</dependency>
+	<dependency type="executable" location="extensions">inkex.py</dependency>
+	
+	<param name="instructions" type="description">Please give the full path for output dir and config file.</param>
+	
+	<param name="outdir" type="string" min="4" max="255" _gui-text="Output dir">MockupMachine</param>
+	<param name="config" type="string" min="4" max="255" _gui-text="Config file">MockupMachine.txt</param>
+	
+	<effect>
+		<object-type>all</object-type>
+		<effects-menu>
+			 <submenu _name="Mockup Machine"/>
+		</effects-menu>
+	</effect>
+	
+	<script>
+		<command reldir="extensions" interpreter="python">MockupMachine.py</command>
+	</script>
+</inkscape-extension>
