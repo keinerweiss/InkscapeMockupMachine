@@ -75,7 +75,6 @@ I suffered a lot with paths including german umlauts and whitespaces. Keep that 
 
 I tested it on my computer only, which is a Windows 8 machine using Inkscape 0.48.
 
-It will leave the last layer constellation active within the active inkscape instance.
 
 TODOs
 =====
