@@ -39,11 +39,13 @@ The configuration
     + Layer to activate
     - Layer to deactivate
     # Box object to use as area-of-interest (cut-out)
+	; comment line, ignored
       blank line to end one file (incemental)
     -- line of minus signs to disable all layers again (full reset).
 
 A config file may look like this:
 
+    ; This is the MockupMachine example configuration (and this is a comment)
     myfile-1.0:
     + layer1
     + layer2

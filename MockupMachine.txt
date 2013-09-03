@@ -1,3 +1,4 @@
+; This is the MockupMachine example configuration (and this is a comment)
 myfile-1.0:
 + layer1
 + layer2

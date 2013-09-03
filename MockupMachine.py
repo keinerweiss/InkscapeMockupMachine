@@ -23,11 +23,13 @@ The configuration
     Filename ends with a colon:
     + Layer to activate
     - Layer to deactivate
+    ; comment line, ignored
       blank line to end one file (incemental)
     -- line of minus signs to disable all layers again (full reset).
 
 A config file may look like this:
 
+; This is a comment
 myfile-1.0:
 + layer1
 + layer2
@@ -36,12 +38,6 @@ myfile-1.1:
 - layer2
 + layer3
 + layer4
-
-myfile-1.1-left:
-# left
-
-myfile-1.1-right:
-# right
 -----------------
 myfile-2.0:
 + layer10
@@ -52,10 +48,6 @@ myfile-2.1:
 + layer12
 
 This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and myfile-2.1.png
-
-TODO: Reset to normal
-TODO: Activate layers in inkscape by config file?
-TODO: Append currently active layers to config file
 '''
 
 import inkex, os, csv, math
@@ -109,6 +101,9 @@ class MockupMachine(inkex.Effect):
 		
 		for line in configLines:
 			line = line.strip()
+			if(line[:1] == ';'):
+				# comment, no action
+				continue
 			if(line[:2] == '--' or line == ''):
 				self.exportCurrent()
 				self.renderBoxId = ''
@@ -191,9 +186,10 @@ class MockupMachine(inkex.Effect):
 		
 		outfile = self.options.outdir+'/'+self.filename+'.png'
 		
-		shellCmd = [self.treatPath(self.inkscapeExecutable),'-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
 		if(self.renderBoxId):
 			shellCmd = [self.treatPath(self.inkscapeExecutable),'-i', self.renderBoxId, '-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
+		else:
+			shellCmd = [self.treatPath(self.inkscapeExecutable),'-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
 		
 		try:
 			os.unlink(self.treatPath(outfile))
