@@ -6,6 +6,12 @@ myfile-1.1:
 - layer2
 + layer3
 + layer4
+
+myfile-1.1-left:
+# left
+
+myfile-1.1-right:
+# right
 -----------------
 myfile-2.0:
 + layer10

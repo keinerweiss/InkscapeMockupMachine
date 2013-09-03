@@ -38,6 +38,7 @@ The configuration
     Filename ends with a colon:
     + Layer to activate
     - Layer to deactivate
+    # Box object to use as area-of-interest (cut-out)
       blank line to end one file (incemental)
     -- line of minus signs to disable all layers again (full reset).
 
@@ -51,6 +52,12 @@ A config file may look like this:
     - layer2
     + layer3
     + layer4
+	
+	myfile-1.1-left:
+	# left
+	
+	myfile-1.1-right:
+	# right
     -----------------
     myfile-2.0:
     + layer10
@@ -60,7 +67,10 @@ A config file may look like this:
     - layer10
     + layer12
 
-This will create the files myfile-1.0.png, myfile-1.1.png, myfile-2.0.png and myfile-2.1.png
+This will create the files myfile-1.0.png, myfile-1.1.png, myfile-1.1-left.png, myfile-1.1-right.png, myfile-2.0.png and myfile-2.1.png
+
+myfile-1.1-left and myfile-1.1-right will show a cropped image based on an elements dimensions. 
+Such "area-of-interest-boxes" are best placed on unused layers. To find or rename the ID, edit the object properties of the box.
 
 Development notes
 =================
