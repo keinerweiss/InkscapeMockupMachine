@@ -88,6 +88,5 @@ I tested it on my computer only, which is a Windows 8 machine using Inkscape 0.4
 
 TODOs
 =====
-* Do not change layer configuration in the active file after export.
 * Append the current configuration to the config file (as a setup help for the user)
 * Activate a constellation using the config file
