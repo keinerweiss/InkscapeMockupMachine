@@ -72,6 +72,7 @@ class MockupMachine(inkex.Effect):
 	inkscapeExecutable = 'inkscape'
 	filename = ''
 	tempfileCounter = 0
+	renderBoxId = ''
 
 	'''
 	Initialize config options, load config file and create output-dir.
@@ -104,12 +105,15 @@ class MockupMachine(inkex.Effect):
 			line = line.strip()
 			if(line[:2] == '--' or line == ''):
 				self.exportCurrent()
+				self.renderBoxId = ''
 			if(line[:2] == '- '):
 				self.activeLayers.remove(line[2:].strip())
 				list(set(self.activeLayers))
 			elif(line[:2] == '+ '):
 				self.activeLayers.append(line[2:].strip())
 				list(set(self.activeLayers))
+			elif(line[:2] == '# '):
+				self.renderBoxId = line[2:].strip()
 			elif(line[:2] == '--'):
 				self.activeLayers = []
 			elif(line.strip() == ''):
@@ -180,7 +184,10 @@ class MockupMachine(inkex.Effect):
 		infile = os.path.abspath(useFile)
 		
 		outfile = self.options.outdir+'/'+self.filename+'.png'
+		
 		shellCmd = [self.treatPath(self.inkscapeExecutable),'-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
+		if(self.renderBoxId):
+			shellCmd = [self.treatPath(self.inkscapeExecutable),'-i', self.renderBoxId, '-z', '-e', self.treatPath(outfile), '-d', "90", self.treatPath(infile)]
 		
 		try:
 			os.unlink(self.treatPath(outfile))
