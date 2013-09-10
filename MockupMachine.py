@@ -66,6 +66,7 @@ class MockupMachine(inkex.Effect):
 	parseFile = ''
 	SVG = ''
 	options = []
+	availableLayers = []
 	activeLayers = []
 	inkscapeExecutable = 'inkscape'
 	filename = ''
@@ -86,7 +87,7 @@ class MockupMachine(inkex.Effect):
 			os.mkdir(self.options.outdir);
 		except:
 			pass
-		config = open(self.options.config, 'r').read()
+
 
 		
 	'''
@@ -94,36 +95,65 @@ class MockupMachine(inkex.Effect):
 	
 	'''
 	def effect(self):
+		if not os.path.exists(self.options.config):
+			inkex.debug("! Config file not found. Path correct?");
+			return
+		if not os.path.exists(self.options.outdir):
+			inkex.debug("! Output path inaccessible. Permissions?");
+			return
+	
 		self.SVG = self.document.getroot()
+		self.scanAvailableLayers()
+		
 		self.parseFile = self.options.outdir+'/temp.MockupMachine'
 		
 		configLines = (line.rstrip('\n') for line in open(self.options.config, 'r'))
 		
-		for line in configLines:
+		
+		for line in configLines:			
 			line = line.strip()
-			if(line[:1] == ';'):
+			command1 = line[:1]
+			command2 = line[:2]
+			command2val = line[2:].strip()
+			
+			exported = False
+			
+			if(command1 == ';'):
 				# comment, no action
 				continue
-			if(line[:2] == '--' or line == ''):
+			if(command2 == '--' or line == ''):
 				self.exportCurrent()
+				exported = True
 				self.renderBoxId = ''
-			if(line[:2] == '- '):
-				self.activeLayers.remove(line[2:].strip())
-				list(set(self.activeLayers))
-			elif(line[:2] == '+ '):
-				self.activeLayers.append(line[2:].strip())
-				list(set(self.activeLayers))
-			elif(line[:2] == '# '):
-				self.renderBoxId = line[2:].strip()
-			elif(line[:2] == '--'):
+			if(command2 == '- '):
+				if not command2val in self.availableLayers:
+					inkex.debug("!- Layer '"+command2val+"' unknown.")
+				else:
+					while command2val in self.activeLayers:
+						self.activeLayers.remove(command2val)
+					list(set(self.activeLayers))
+			elif(command2 == '+ '):
+				if not command2val in self.availableLayers:
+					inkex.debug("!+ Layer '"+command2val+"' unknown.")
+				else:
+					if not command2val in self.activeLayers:
+						self.activeLayers.append(command2val)
+					list(set(self.activeLayers))
+			elif(command2 == '# '):
+				if self.getElementById(command2val) is not None:
+					self.renderBoxId = command2val
+				else:
+					inkex.debug("!# Box ID '"+command2val+"' unknown.")
+			elif(command2 == '--'):
 				self.activeLayers = []
-			elif(line.strip() == ''):
+			elif(line == ''):
 				pass
 			else:
-				self.filename = line[:-1].strip()
+				self.filename = line[:-1]
 		''' export the last pending image '''
-		self.exportCurrent()
-		
+		if not exported:
+			self.exportCurrent()
+	
 	'''
 	Deactivate all layers in the current file
 	
@@ -137,6 +167,16 @@ class MockupMachine(inkex.Effect):
 			style = re.sub(r'display:[a-z]*', '', style)
 			style = 'display:none;'+style
 			e.attrib['style'] = style
+
+	'''
+	Extract layer labels that are valid to use in config
+	
+	'''
+	def scanAvailableLayers(self):
+		for e in self.SVG.findall('./{http://www.w3.org/2000/svg}g'):
+			if e.attrib['{http://www.inkscape.org/namespaces/inkscape}groupmode'] != 'layer':
+				continue
+			self.availableLayers.append(e.attrib['{http://www.inkscape.org/namespaces/inkscape}label'])
 
 	'''
 	Activate the layer with the given label
